@@ -149,7 +149,7 @@ class ShenlanEncode(object):
             exit(0)
         return x
 
-    def get_i(self):
+    def get_i(self):  # 将字典生成的字符串中的双引号改为单引号并去掉空格
         str_info_dict = re.sub("'", '"', str(self.info_dict))
         str_info_dict = re.sub(" ", '', str_info_dict)
         return "{SRBX1}" + self.js_base64(self.xencode(str_info_dict, self.challenge))
@@ -196,12 +196,11 @@ class XauatLogin(object):
             return None
 
     def get_challenge(self):  # 获取 taken
-        time_ = str(int(time.time() * 1000))
         get_challenge_params = {
             "callback": 'jQuery11277455887669735664_' + str(int(time.time() * 1000)),  # 这里的字符串少了一位
             "username": self.username,
             "ip": self.ip,
-            '_': time_
+            '_': str(int(time.time() * 1000))
         }
         get_challenge_request = requests.get(self.get_challenge_url,
                                              headers=self.default_headers,
@@ -265,7 +264,7 @@ class XauatLogin(object):
             print('\n{:-^41}'.format('Login successfully'))
             print('{: ^20}'.format('User name') + '-' + '{: ^20}'.format(user_name))
             print('{: ^20}'.format('Balance') + '-' + '{: ^20}'.format(user_balance))
-            print('{: ^20}'.format('Remaining MB') + '-' + '{: ^20.2f}'.format(int(sum_bytes)/1000000))
+            print('{: ^20}'.format('Used MB') + '-' + '{: ^20.2f}'.format(int(sum_bytes)/1000000))
             print('{:-^41}\n'.format(''))
         else:
             print('获取登录信息失败 - ' + f'<{error_info}>')
